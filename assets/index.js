@@ -12,6 +12,26 @@ if (window.location.pathname === '/notes') {
   noteList = document.querySelectorAll('.list-container .list-group');
 }
 
+const isInputValid = () => {
+  const titleValue = noteTitle.value.trim();
+  const textValue = noteText.value.trim();
+
+  return titleValue !== '' && textValue !== '';
+};
+
+const updateSaveButtonStatus = () => {
+  if (isInputValid()) {
+    saveNoteBtn.removeAttribute('disabled');
+  } else {
+    saveNoteBtn.setAttribute('disabled', 'disabled');
+  }
+};
+
+noteTitle.addEventListener('keyup', updateSaveButtonStatus);
+noteText.addEventListener('keyup', updateSaveButtonStatus);
+
+updateSaveButtonStatus(); 
+
 const show = (elem) => {
   elem.style.display = 'inline';
 };

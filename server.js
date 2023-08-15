@@ -1,11 +1,17 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
 app.get('/api/notes', (req, res) => {
   fs.readFile(path.join(__dirname, 'db', 'db.json'), 'utf8', (err, data) => {
     if (err) {
@@ -27,7 +33,7 @@ app.post('/api/notes', (req, res) => {
     }
 
     const notes = JSON.parse(data);
-    const newNoteId = Date.now().toString();
+    const newNoteId = uuidv4();
     newNote.id = newNoteId;
     notes.push(newNote);
     fs.writeFile(path.join(__dirname, 'db', 'db.json'), JSON.stringify(notes), (err) => {
